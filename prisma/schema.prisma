@@ -8,10 +8,40 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  fullName  String
-  email     String   @unique
-  password  String
-  role      Int      @default(0)
-  createdAt DateTime @default(now())
+  id               Int              @id @default(autoincrement())
+  fullName         String
+  email            String           @unique
+  password         String
+  role             Int              @default(0)
+  createdAt        DateTime         @default(now())
+  sentRequests     ServiceRequest[] @relation("ClientRequests")
+  receivedRequests ServiceRequest[] @relation("ProviderRequests")
+}
+
+model ServiceRequest {
+  id                 Int       @id @default(autoincrement())
+  clientId           Int
+  providerId         Int
+  serviceType        String
+  category           String?
+  exactIssue         String?
+  status             String    @default("pending")
+  quotedPrice        Float?
+  isNegotiable       Boolean?
+  clientCounterPrice Float?
+  unreadForClient    Boolean   @default(false)
+  unreadForProvider  Boolean   @default(true)
+
+  scheduleStatus     String    @default("none")
+  appointmentDate    DateTime?
+  appointmentMessage String?
+  lastDateProposedBy String?
+
+  createdAt          DateTime  @default(now())
+
+  client   User @relation("ClientRequests", fields: [clientId], references: [id])
+  provider User @relation("ProviderRequests", fields: [providerId], references: [id])
+
+  @@index([clientId])
+  @@index([providerId])
 }

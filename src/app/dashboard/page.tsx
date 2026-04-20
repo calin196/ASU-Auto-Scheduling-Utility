@@ -2,37 +2,211 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
+import AccountMenu from "@/components/AccountMenu";
+import ProviderRequestCard from "@/components/ProviderRequestCard";
+import ClientMessagesMenu from "@/components/ClientMessagesMenu";
+import ClientAppointmentsMenu from "@/components/ClientAppointmentsMenu";
+
+type Company = {
+  id: number;
+  fullName: string;
+  email: string;
+};
+
+type ProviderRequest = {
+  id: number;
+  serviceType: string;
+  category: string | null;
+  exactIssue: string | null;
+  status: string;
+  quotedPrice: number | null;
+  isNegotiable: boolean | null;
+  clientCounterPrice: number | null;
+  scheduleStatus: string;
+  appointmentDate: Date | string | null;
+  appointmentMessage: string | null;
+  lastDateProposedBy: string | null;
+  createdAt: Date | string;
+  client: {
+    fullName: string;
+    email: string;
+  };
+};
+
+type ClientRequest = {
+  id: number;
+  serviceType: string;
+  category: string | null;
+  exactIssue: string | null;
+  status: string;
+  quotedPrice: number | null;
+  isNegotiable: boolean | null;
+  clientCounterPrice: number | null;
+  unreadForClient: boolean;
+  scheduleStatus: string;
+  appointmentDate: Date | string | null;
+  appointmentMessage: string | null;
+  lastDateProposedBy: string | null;
+  createdAt: Date | string;
+  provider: {
+    fullName: string;
+    email: string;
+  };
+};
+
+type ClientAppointment = {
+  id: number;
+  serviceType: string;
+  category: string | null;
+  appointmentDate: Date | string;
+  provider: {
+    fullName: string;
+    email: string;
+  };
+};
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const userRole = cookieStore.get("userRole")?.value;
   const userName = cookieStore.get("userName")?.value || "User";
+  const userId = Number(cookieStore.get("userId")?.value);
 
-  if (!userRole) {
+  if (!userRole || !userId) {
     redirect("/login");
   }
 
   const isProvider = userRole === "1";
 
-  let companies: { id: number; fullName: string; email: string }[] = [];
+  const companies: Company[] = !isProvider
+    ? await prisma.user.findMany({
+        where: { role: 1 },
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+        },
+        orderBy: {
+          fullName: "asc",
+        },
+      })
+    : [];
 
-  if (!isProvider) {
-    companies = await prisma.user.findMany({
-      where: { role: 1 },
-      select: {
-        id: true,
-        fullName: true,
-        email: true,
-      },
-      orderBy: {
-        fullName: "asc",
-      },
-    });
-  }
+  const providerRequests: ProviderRequest[] = isProvider
+    ? await prisma.serviceRequest.findMany({
+        where: {
+          providerId: userId,
+        },
+        select: {
+          id: true,
+          serviceType: true,
+          category: true,
+          exactIssue: true,
+          status: true,
+          quotedPrice: true,
+          isNegotiable: true,
+          clientCounterPrice: true,
+          scheduleStatus: true,
+          appointmentDate: true,
+          appointmentMessage: true,
+          lastDateProposedBy: true,
+          createdAt: true,
+          client: {
+            select: {
+              fullName: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
+    : [];
+
+  const clientRequests: ClientRequest[] = !isProvider
+    ? await prisma.serviceRequest.findMany({
+        where: {
+          clientId: userId,
+        },
+        select: {
+          id: true,
+          serviceType: true,
+          category: true,
+          exactIssue: true,
+          status: true,
+          quotedPrice: true,
+          isNegotiable: true,
+          clientCounterPrice: true,
+          unreadForClient: true,
+          scheduleStatus: true,
+          appointmentDate: true,
+          appointmentMessage: true,
+          lastDateProposedBy: true,
+          createdAt: true,
+          provider: {
+            select: {
+              fullName: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
+    : [];
+
+  const activeAppointments: ClientAppointment[] = !isProvider
+    ? (await prisma.serviceRequest.findMany({
+        where: {
+          clientId: userId,
+          status: "accepted",
+          scheduleStatus: "scheduled",
+          appointmentDate: {
+            not: null,
+            gte: new Date(),
+          },
+        },
+        select: {
+          id: true,
+          serviceType: true,
+          category: true,
+          appointmentDate: true,
+          provider: {
+            select: {
+              fullName: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          appointmentDate: "asc",
+        },
+      })) as ClientAppointment[]
+    : [];
+
+  const unreadClientCount = !isProvider
+    ? clientRequests.filter((request) => request.unreadForClient).length
+    : 0;
 
   return (
     <main className="auth-shell">
-      <div className="auth-card" style={{ maxWidth: "1100px" }}>
+      <div
+        className="auth-card"
+        style={{ maxWidth: "1100px", position: "relative" }}
+      >
+        <AccountMenu />
+
+        {!isProvider && (
+          <>
+            <ClientMessagesMenu
+              requests={clientRequests}
+              unreadCount={unreadClientCount}
+            />
+            <ClientAppointmentsMenu appointments={activeAppointments} />
+          </>
+        )}
+
         <p
           style={{
             margin: 0,
@@ -71,18 +245,48 @@ export default async function DashboardPage() {
         </p>
 
         {isProvider ? (
-          <p
-            style={{
-              marginTop: "12px",
-              color: "#a1a1aa",
-              fontSize: "1.25rem",
-              lineHeight: 1.6,
-              textAlign: "center",
-            }}
-          >
-            Here you will manage appointments, approve or reject bookings,
-            organize your work schedule, and handle your business services.
-          </p>
+          <>
+            <p
+              style={{
+                marginTop: "12px",
+                color: "#a1a1aa",
+                fontSize: "1.1rem",
+                lineHeight: 1.6,
+                textAlign: "center",
+              }}
+            >
+              Here you can see incoming requests from clients.
+            </p>
+
+            <div
+              style={{
+                marginTop: "36px",
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                gap: "20px",
+              }}
+            >
+              {providerRequests.length === 0 ? (
+                <div
+                  style={{
+                    gridColumn: "1 / -1",
+                    border: "1px solid #27272a",
+                    borderRadius: "20px",
+                    padding: "24px",
+                    background: "#09090b",
+                    textAlign: "center",
+                    color: "#a1a1aa",
+                  }}
+                >
+                  No client requests yet.
+                </div>
+              ) : (
+                providerRequests.map((request) => (
+                  <ProviderRequestCard key={request.id} request={request} />
+                ))
+              )}
+            </div>
+          </>
         ) : (
           <>
             <p
