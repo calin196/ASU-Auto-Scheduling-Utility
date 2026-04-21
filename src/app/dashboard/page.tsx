@@ -6,6 +6,8 @@ import AccountMenu from "@/components/AccountMenu";
 import ProviderRequestCard from "@/components/ProviderRequestCard";
 import ClientMessagesMenu from "@/components/ClientMessagesMenu";
 import ClientAppointmentsMenu from "@/components/ClientAppointmentsMenu";
+import ProviderCalendar from "@/components/ProviderCalendar";
+import ProviderHistoryMenu from "@/components/ProviderHistoryMenu";
 
 type Company = {
   id: number;
@@ -193,11 +195,13 @@ export default async function DashboardPage() {
     <main className="auth-shell">
       <div
         className="auth-card"
-        style={{ maxWidth: "1100px", position: "relative" }}
+        style={{ maxWidth: isProvider ? "1180px" : "1100px", position: "relative" }}
       >
         <AccountMenu />
 
-        {!isProvider && (
+        {isProvider ? (
+          <ProviderHistoryMenu requests={providerRequests} />
+        ) : (
           <>
             <ClientMessagesMenu
               requests={clientRequests}
@@ -255,37 +259,11 @@ export default async function DashboardPage() {
                 textAlign: "center",
               }}
             >
-              Here you can see incoming requests from clients.
+              Use the calendar to manage appointments. Open history to see all
+              requests in the old card view.
             </p>
 
-            <div
-              style={{
-                marginTop: "36px",
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-                gap: "20px",
-              }}
-            >
-              {providerRequests.length === 0 ? (
-                <div
-                  style={{
-                    gridColumn: "1 / -1",
-                    border: "1px solid #27272a",
-                    borderRadius: "20px",
-                    padding: "24px",
-                    background: "#09090b",
-                    textAlign: "center",
-                    color: "#a1a1aa",
-                  }}
-                >
-                  No client requests yet.
-                </div>
-              ) : (
-                providerRequests.map((request) => (
-                  <ProviderRequestCard key={request.id} request={request} />
-                ))
-              )}
-            </div>
+            <ProviderCalendar requests={providerRequests} />
           </>
         ) : (
           <>

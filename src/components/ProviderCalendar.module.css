@@ -1,0 +1,210 @@
+.calendarWrapper {
+  margin-top: 28px;
+}
+
+.calendarBox {
+  border: 1px solid #27272a;
+  border-radius: 18px;
+  padding: 18px;
+  background: #09090b;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.navButton {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid #3f3f46;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.titleArea {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.titleButton {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0;
+}
+
+.weekdaysGrid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.weekday {
+  text-align: center;
+  color: #a5b4fc;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  padding-bottom: 4px;
+}
+
+.dayCellEmpty {
+  min-height: 72px;
+  border-radius: 14px;
+  border: 1px solid #111113;
+  background: #070709;
+}
+
+.dayCell {
+  min-height: 72px;
+  border-radius: 14px;
+  border: 1px solid #27272a;
+  background: #0b0b0d;
+  color: white;
+  cursor: pointer;
+  text-align: left;
+  padding: 10px;
+  position: relative;
+}
+
+.dayCellToday {
+  border: 1px solid #6366f1;
+}
+
+.dayCellSelected {
+  border: 1px solid white;
+  background: #15151a;
+}
+
+.dayNumber {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.dayBadge {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #22c55e;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+}
+
+.pickerMonth {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #111113;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  padding: 12px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pickerYear {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 180px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #111113;
+  border: 1px solid #27272a;
+  border-radius: 14px;
+  padding: 12px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pickerMonth::-webkit-scrollbar,
+.pickerYear::-webkit-scrollbar {
+  display: none;
+}
+
+.pickerButton {
+  padding: 10px 8px;
+  border-radius: 10px;
+  border: 1px solid #3f3f46;
+  background: #09090b;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.pickerButtonActive {
+  border: 1px solid white;
+  background: #15151a;
+}
+
+.appointmentsBox {
+  margin-top: 18px;
+  border: 1px solid #27272a;
+  border-radius: 18px;
+  padding: 18px;
+  background: #09090b;
+}
+
+.appointmentsTitle {
+  margin-top: 0;
+  margin-bottom: 14px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: white;
+}
+
+.emptyAppointments {
+  border: 1px solid #27272a;
+  border-radius: 16px;
+  padding: 18px;
+  background: #111113;
+  text-align: center;
+  color: #a1a1aa;
+}
+
+.appointmentsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
