@@ -10,9 +10,7 @@ if (!databaseUrl) {
   throw new Error("Missing DATABASE_URL environment variable for Prisma.");
 }
 
-const adapter = new PrismaPg({
-  url: databaseUrl,
-});
+const adapter = new PrismaPg(databaseUrl);
 
 const prisma =
   globalForPrisma.prisma ??
