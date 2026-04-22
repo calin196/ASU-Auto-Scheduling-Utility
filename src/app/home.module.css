@@ -1,0 +1,29 @@
+.homeSection {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 190px 24px 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  align-items: center;
+}
+
+.infoCard {
+  border: 1px solid #27272a;
+  border-radius: 0;
+  padding: 28px;
+  background: linear-gradient(180deg, rgba(9, 9, 11, 0.95), rgba(5, 5, 8, 0.95));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.infoBlock {
+  border: 1px solid #27272a;
+  border-radius: 0;
+  padding: 22px;
+  background: #09090b;
+  margin-bottom: 18px;
+}
+
+.infoBlock:last-child {
+  margin-bottom: 0;
+}

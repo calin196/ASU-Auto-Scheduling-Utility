@@ -2,7 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
-import { sendServiceRequest } from "./actions";
+import { sendServiceRequest, sendServiceRequestToAll } from "./actions";
 
 type Step1Key = "repair" | "maintenance" | "diagnostic";
 type Step1Value = Step1Key | "" | "other" | "Undetermined";
@@ -597,8 +597,10 @@ function OtherInput({
 
 export default function CompanyServiceClient({
   company,
+  applyToAll = false,
 }: {
-  company: Company;
+  company?: Company;
+  applyToAll?: boolean;
 }) {
   const [step1, setStep1] = useState<Step1Value>("");
   const [step2, setStep2] = useState("");
@@ -677,6 +679,8 @@ export default function CompanyServiceClient({
     step1StopsFlow ||
     (step1Finished && step2StopsFlow) ||
     (step1Finished && step2Finished && step3Finished);
+
+  const title = applyToAll ? "All Companies" : company?.fullName || "Company";
 
   function resetAll() {
     setStep1("");
@@ -766,12 +770,18 @@ export default function CompanyServiceClient({
     setRequestFeedback("");
 
     startTransition(async () => {
-      const result = await sendServiceRequest({
-        providerId: company.id,
-        serviceType,
-        category,
-        exactIssue,
-      });
+      const result = applyToAll
+        ? await sendServiceRequestToAll({
+            serviceType,
+            category,
+            exactIssue,
+          })
+        : await sendServiceRequest({
+            providerId: company!.id,
+            serviceType,
+            category,
+            exactIssue,
+          });
 
       if (result.success) {
         setRequestSent(true);
@@ -808,7 +818,7 @@ export default function CompanyServiceClient({
             textAlign: "center",
           }}
         >
-          {company.fullName}
+          {title}
         </h1>
 
         <p
@@ -820,9 +830,9 @@ export default function CompanyServiceClient({
             textAlign: "center",
           }}
         >
-          Select the requested service. If you are not sure, choose{" "}
-          <strong>I don&apos;t know</strong> or use <strong>Other</strong> to
-          write your own answer.
+          {applyToAll
+            ? "Select the requested service once and send it to all registered companies."
+            : "Select the requested service. If you are not sure, choose I don't know or use Other to write your own answer."}
         </p>
 
         <div
@@ -1170,6 +1180,8 @@ export default function CompanyServiceClient({
                     ? "Sending..."
                     : requestSent
                     ? "Request sent"
+                    : applyToAll
+                    ? "Send to all companies"
                     : "Send request"}
                 </button>
               </div>

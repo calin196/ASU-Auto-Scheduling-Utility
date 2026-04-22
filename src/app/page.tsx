@@ -1,38 +1,168 @@
 import Link from "next/link";
+import styles from "./home.module.css";
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 text-center">
-        <p className="mb-6 text-sm uppercase tracking-[0.4em] text-indigo-200">
-          ASU PLATFORM
-        </p>
-
-        <h1 className="max-w-5xl text-6xl font-extrabold tracking-tight sm:text-7xl md:text-8xl">
-          Auto Scheduling Utility
-        </h1>
-
-        <p className="mt-8 max-w-3xl text-xl leading-9 text-zinc-400">
-          A modern platform where clients book appointments and auto services
-          manage them easily.
-        </p>
-
-        <div className="mt-14 flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/login"
-            className="inline-flex min-w-[160px] items-center justify-center rounded-2xl border border-white bg-white px-8 py-4 font-semibold !text-black transition hover:opacity-90"
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top, rgba(30,41,90,0.35), transparent 35%), #000000",
+        color: "white",
+      }}
+    >
+      <section className={styles.homeSection}>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              letterSpacing: "0.35em",
+              textTransform: "uppercase",
+              color: "#a5b4fc",
+              fontSize: "0.95rem",
+            }}
           >
-            <span className="!text-black">Login</span>
-          </Link>
+            Auto Scheduling Utility
+          </p>
 
-          <Link
-            href="/register"
-            className="inline-flex min-w-[160px] items-center justify-center rounded-2xl border border-white bg-transparent px-8 py-4 font-semibold text-white transition hover:bg-white hover:text-black"
+          <h1
+            style={{
+              marginTop: "18px",
+              marginBottom: "18px",
+              fontSize: "4rem",
+              lineHeight: 1.05,
+              fontWeight: 900,
+            }}
           >
-            Register
-          </Link>
+            Book car services
+            <br />
+            faster and easier
+          </h1>
+
+          <p
+            style={{
+              color: "#a1a1aa",
+              fontSize: "1.15rem",
+              lineHeight: 1.8,
+              maxWidth: "640px",
+            }}
+          >
+            ASU helps clients find service providers, send requests, receive
+            offers, negotiate prices, and manage appointments in one simple
+            platform.
+          </p>
+
+          <div
+            style={{
+              marginTop: "28px",
+              display: "flex",
+              gap: "14px",
+              flexWrap: "wrap",
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                padding: "14px 22px",
+                borderRadius: "0",
+                border: "1px solid white",
+                background: "white",
+                color: "black",
+                textDecoration: "none",
+                fontWeight: 700,
+              }}
+            >
+              Start now
+            </Link>
+
+            <Link
+              href="/register"
+              style={{
+                padding: "14px 22px",
+                borderRadius: "0",
+                border: "1px solid #3f3f46",
+                background: "transparent",
+                color: "white",
+                textDecoration: "none",
+                fontWeight: 700,
+              }}
+            >
+              Create account
+            </Link>
+          </div>
         </div>
-      </div>
+
+        <div className={styles.infoCard}>
+          <div className={styles.infoBlock}>
+            <h3
+              style={{
+                marginTop: 0,
+                marginBottom: "10px",
+                fontSize: "1.25rem",
+                fontWeight: 800,
+              }}
+            >
+              For clients
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                color: "#a1a1aa",
+                lineHeight: 1.7,
+              }}
+            >
+              Choose a company, describe the service you need, compare offers,
+              and keep track of your appointments.
+            </p>
+          </div>
+
+          <div className={styles.infoBlock}>
+            <h3
+              style={{
+                marginTop: 0,
+                marginBottom: "10px",
+                fontSize: "1.25rem",
+                fontWeight: 800,
+              }}
+            >
+              For providers
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                color: "#a1a1aa",
+                lineHeight: 1.7,
+              }}
+            >
+              Receive requests, accept or decline them, set prices, and manage
+              your work through the calendar dashboard.
+            </p>
+          </div>
+
+          <div className={styles.infoBlock}>
+            <h3
+              style={{
+                marginTop: 0,
+                marginBottom: "10px",
+                fontSize: "1.25rem",
+                fontWeight: 800,
+              }}
+            >
+              Direct support
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                color: "#a1a1aa",
+                lineHeight: 1.7,
+              }}
+            >
+              Need help or want more information? Call us directly at
+              <strong style={{ color: "white" }}> +31 616 245 145</strong>.
+            </p>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import CompanyServiceClient from "./CompanyServiceClient";
+
 export default async function CompanyServicePage({
   params,
 }: {
@@ -15,6 +16,11 @@ export default async function CompanyServicePage({
   }
 
   const { id } = await params;
+
+  if (id === "all") {
+    return <CompanyServiceClient applyToAll />;
+  }
+
   const companyId = Number(id);
 
   if (!Number.isInteger(companyId)) {

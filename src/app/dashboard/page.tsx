@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import AccountMenu from "@/components/AccountMenu";
-import ProviderRequestCard from "@/components/ProviderRequestCard";
 import ClientMessagesMenu from "@/components/ClientMessagesMenu";
 import ClientAppointmentsMenu from "@/components/ClientAppointmentsMenu";
 import ProviderCalendar from "@/components/ProviderCalendar";
@@ -67,7 +66,11 @@ type ClientAppointment = {
   };
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string }>;
+}) {
   const cookieStore = await cookies();
   const userRole = cookieStore.get("userRole")?.value;
   const userName = cookieStore.get("userName")?.value || "User";
@@ -77,11 +80,30 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  const searchQuery = (resolvedSearchParams?.q || "").trim();
+
   const isProvider = userRole === "1";
 
   const companies: Company[] = !isProvider
     ? await prisma.user.findMany({
-        where: { role: 1 },
+        where: searchQuery
+          ? {
+              role: 1,
+              OR: [
+                {
+                  fullName: {
+                    contains: searchQuery,
+                  },
+                },
+                {
+                  email: {
+                    contains: searchQuery,
+                  },
+                },
+              ],
+            }
+          : { role: 1 },
         select: {
           id: true,
           fullName: true,
@@ -276,9 +298,101 @@ export default async function DashboardPage() {
                 textAlign: "center",
               }}
             >
-              Choose a company to view its services and continue with your
-              booking.
+              Choose one company or send the same request to all companies at once.
             </p>
+
+            <form
+              method="GET"
+              style={{
+                marginTop: "24px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: "420px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "0 14px",
+                  height: "46px",
+                  borderRadius: "14px",
+                  border: "1px solid #27272a",
+                  background: "#09090b",
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#a1a1aa"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ flexShrink: 0 }}
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+
+                <input
+                  type="text"
+                  name="q"
+                  defaultValue={searchQuery}
+                  placeholder="Search companies..."
+                  style={{
+                    flex: 1,
+                    height: "100%",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                    color: "white",
+                    fontSize: "0.95rem",
+                  }}
+                />
+
+                <button
+                  type="submit"
+                  style={{
+                    padding: "7px 12px",
+                    borderRadius: "10px",
+                    border: "1px solid #3f3f46",
+                    background: "transparent",
+                    color: "white",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    fontSize: "0.9rem",
+                    flexShrink: 0,
+                  }}
+                >
+                  Go
+                </button>
+              </div>
+            </form>
+
+            {searchQuery && (
+              <div
+                style={{
+                  marginTop: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <Link
+                  href="/dashboard"
+                  style={{
+                    color: "#a1a1aa",
+                    fontSize: "0.92rem",
+                    textDecoration: "none",
+                  }}
+                >
+                  Clear search
+                </Link>
+              </div>
+            )}
 
             <div
               style={{
@@ -303,9 +417,8 @@ export default async function DashboardPage() {
                   No registered companies found yet.
                 </div>
               ) : (
-                companies.map((company) => (
+                <>
                   <div
-                    key={company.id}
                     style={{
                       border: "1px solid #27272a",
                       borderRadius: "20px",
@@ -321,7 +434,7 @@ export default async function DashboardPage() {
                         color: "white",
                       }}
                     >
-                      {company.fullName}
+                      All companies
                     </h2>
 
                     <p
@@ -330,14 +443,14 @@ export default async function DashboardPage() {
                         marginBottom: "20px",
                         color: "#a1a1aa",
                         fontSize: "0.95rem",
-                        wordBreak: "break-word",
+                        lineHeight: 1.6,
                       }}
                     >
-                      {company.email}
+                      Fill the request once and send it to every registered company.
                     </p>
 
                     <Link
-                      href={`/companies/${company.id}`}
+                      href="/companies/all"
                       style={{
                         display: "block",
                         width: "100%",
@@ -352,10 +465,64 @@ export default async function DashboardPage() {
                         textDecoration: "none",
                       }}
                     >
-                      View services
+                      Apply to all companies
                     </Link>
                   </div>
-                ))
+
+                  {companies.map((company) => (
+                    <div
+                      key={company.id}
+                      style={{
+                        border: "1px solid #27272a",
+                        borderRadius: "20px",
+                        padding: "24px",
+                        background: "#09090b",
+                      }}
+                    >
+                      <h2
+                        style={{
+                          margin: 0,
+                          fontSize: "1.4rem",
+                          fontWeight: 700,
+                          color: "white",
+                        }}
+                      >
+                        {company.fullName}
+                      </h2>
+
+                      <p
+                        style={{
+                          marginTop: "10px",
+                          marginBottom: "20px",
+                          color: "#a1a1aa",
+                          fontSize: "0.95rem",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {company.email}
+                      </p>
+
+                      <Link
+                        href={`/companies/${company.id}`}
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          padding: "12px 16px",
+                          borderRadius: "14px",
+                          border: "1px solid white",
+                          background: "white",
+                          color: "black",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          textAlign: "center",
+                          textDecoration: "none",
+                        }}
+                      >
+                        View services
+                      </Link>
+                    </div>
+                  ))}
+                </>
               )}
             </div>
           </>
