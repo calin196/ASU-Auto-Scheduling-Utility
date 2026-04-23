@@ -50,6 +50,7 @@ export default function ProviderHistoryMenu({
   return (
     <div
       ref={menuRef}
+      className="floating-menu history-menu"
       style={{
         position: "fixed",
         top: "84px",
@@ -119,6 +120,7 @@ export default function ProviderHistoryMenu({
 
       {open && (
         <div
+          className="floating-panel"
           style={{
             marginTop: "10px",
             width: "460px",

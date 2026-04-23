@@ -24,6 +24,7 @@ export default function AccountMenu() {
   return (
     <div
       ref={menuRef}
+      className="floating-menu account-menu"
       style={{
         position: "fixed",
         top: "18px",
@@ -67,6 +68,7 @@ export default function AccountMenu() {
 
       {open && (
         <div
+          className="floating-panel"
           style={{
             marginTop: "10px",
             minWidth: "190px",

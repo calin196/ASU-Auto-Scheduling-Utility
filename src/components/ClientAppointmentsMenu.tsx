@@ -50,6 +50,7 @@ export default function ClientAppointmentsMenu({
   return (
     <div
       ref={menuRef}
+      className="floating-menu appointments-menu"
       style={{
         position: "fixed",
         top: "150px",
@@ -124,6 +125,7 @@ export default function ClientAppointmentsMenu({
 
       {open && (
         <div
+          className="floating-panel"
           style={{
             marginTop: "10px",
             width: "400px",

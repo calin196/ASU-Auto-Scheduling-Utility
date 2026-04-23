@@ -214,9 +214,9 @@ export default async function DashboardPage({
     : 0;
 
   return (
-    <main className="auth-shell">
+    <main className="auth-shell dashboard-shell">
       <div
-        className="auth-card"
+        className="auth-card dashboard-card"
         style={{ maxWidth: isProvider ? "1180px" : "1100px", position: "relative" }}
       >
         <AccountMenu />

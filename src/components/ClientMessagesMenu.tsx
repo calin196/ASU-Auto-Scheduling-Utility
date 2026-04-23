@@ -269,6 +269,7 @@ export default function ClientMessagesMenu({
   return (
     <div
       ref={menuRef}
+      className="floating-menu messages-menu"
       style={{
         position: "fixed",
         top: "84px",
@@ -337,6 +338,7 @@ export default function ClientMessagesMenu({
 
       {open && (
         <div
+          className="floating-panel"
           style={{
             marginTop: "10px",
             width: "420px",
