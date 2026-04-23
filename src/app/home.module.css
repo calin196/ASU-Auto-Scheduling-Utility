@@ -27,3 +27,22 @@
 .infoBlock:last-child {
   margin-bottom: 0;
 }
+
+@media (max-width: 980px) {
+  .homeSection {
+    padding: 140px 18px 48px;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .homeSection {
+    padding: 120px 16px 40px;
+    gap: 22px;
+  }
+
+  .infoCard,
+  .infoBlock {
+    padding: 20px;
+  }
+}

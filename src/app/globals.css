@@ -180,8 +180,13 @@ button {
   font-weight: 600;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .auth-shell {
+    padding: 18px;
+  }
+
   .auth-card {
+    max-width: 100% !important;
     padding: 28px 20px;
     border-radius: 24px;
   }
@@ -189,4 +194,33 @@ button {
   .auth-title {
     font-size: 2.4rem;
   }
+
+  .auth-form {
+    gap: 16px;
+  }
+
+  .form-input,
+  .form-select,
+  .auth-button {
+    font-size: 0.98rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+
+  .auth-title {
+    font-size: 2.1rem;
+  }
+}
+
+img,
+iframe,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
 }
