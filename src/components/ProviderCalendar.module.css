@@ -79,9 +79,21 @@
   background: #0b0b0d;
   color: white;
   cursor: pointer;
-  text-align: left;
-  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10px 0;
   position: relative;
+}
+
+.dayNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2ch;
+  margin: 0 auto;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .dayCellToday {
@@ -190,6 +202,10 @@
   .titleArea {
     width: 100%;
     justify-content: center;
+  }
+
+  .dayNumber {
+    min-width: 2.4ch;
   }
 }
 
