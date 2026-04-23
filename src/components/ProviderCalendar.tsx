@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import ProviderRequestCard from "@/components/ProviderRequestCard";
 import styles from "./ProviderCalendar.module.css";
 
@@ -103,6 +103,37 @@ export default function ProviderCalendar({
   const [showYearPicker, setShowYearPicker] = useState(false);
 
   const pickerRef = useRef<HTMLDivElement | null>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+    touchStartY.current = event.touches[0]?.clientY ?? null;
+  }
+
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null || touchStartY.current === null) {
+      return;
+    }
+
+    const endX = event.changedTouches[0]?.clientX ?? 0;
+    const endY = event.changedTouches[0]?.clientY ?? 0;
+    const deltaX = endX - touchStartX.current;
+    const deltaY = endY - touchStartY.current;
+
+    const isHorizontalSwipe = Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY);
+
+    if (isHorizontalSwipe) {
+      if (deltaX < 0) {
+        changeMonth(1);
+      } else {
+        changeMonth(-1);
+      }
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+  }
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -191,7 +222,11 @@ export default function ProviderCalendar({
 
   return (
     <div className={styles.calendarWrapper}>
-      <div className={styles.calendarBox}>
+      <div
+        className={styles.calendarBox}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className={styles.topBar}>
           <button
             type="button"

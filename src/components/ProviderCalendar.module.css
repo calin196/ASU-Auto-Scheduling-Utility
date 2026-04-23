@@ -178,6 +178,21 @@
   background: #15151a;
 }
 
+@media (max-width: 640px) {
+  .navButton {
+    display: none;
+  }
+
+  .topBar {
+    justify-content: center;
+  }
+
+  .titleArea {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .appointmentsBox {
   margin-top: 18px;
   border: 1px solid #27272a;
